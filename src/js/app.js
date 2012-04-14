@@ -195,7 +195,7 @@ var SeekerView = Backbone.View.extend({
 		return this;
 	},
 
-	"$loading": $("<div class=\"ch-loading-wrap\"><div class=\"ch-loading\">Cargando...</div></div>"),
+	"$loading": $("<div class=\"ch-loading-wrap\"><div class=\"ch-loading\">Buscando...</div></div>"),
 
 	"start": function (query) {
 		var that = this,

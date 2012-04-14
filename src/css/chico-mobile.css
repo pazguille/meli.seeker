@@ -11,7 +11,6 @@
 
 body {
 	margin: 0 auto;
-	width: 350px;
 }
 
 .ch-layout {
@@ -1700,14 +1699,29 @@ input[readonly]:focus {
 }
 
 /*------------------------------------------------------------------------*/
+
+body,
+.ch-header {
+	width: 400px;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 1);
+}
+
 .ch-header {
 	position: fixed;
-	width: 350px;
 	z-index: 1;
 }
 
 .ch-loading {
 	margin: 0 auto;
+}
+
+.ch-list li {
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+#results {
+	padding-top: 44px;
+	margin: 0;
 }
 
 #results .ch-list {
@@ -1717,39 +1731,63 @@ input[readonly]:focus {
 	margin: 0;
 }
 
+
+
 #results .ch-list li a::after {
 	top: 30%;
 }
 
 .ch-price {
-	font-size: 20px !important;
+	font-size: 18px !important;
 	text-align: right;
 	margin-right: 25px !important;
 }
 
-#results {
-	padding-top: 55px;
+.ch-loading-wrap {
+	background: #F4F4F4;
+	padding: 10px 0;
+}
+
+.ch-loading-wrap .ch-loading {
+	font-size: 14px;
+	line-height: 24px;
+	text-shadow: 0 1px 0px rgba(255, 255, 255, 1);
+}
+
+.ch-box-highlight {
+	padding: 0;
 }
 
 .item,
 .item a {
-	overflow: hidden;
+	
 }
 
 .item a {
 	display: inline-block;
-}
-
-.slats li {
-	margin: 0 0 10px 0;
-	padding: 0 0 10px 0;
-	border-bottom: 1px solid #eee;
 	overflow: hidden;
 }
 
+.location {
+	color: #666;
+	font-size: 12px;
+}
+
+.slats li:hover {
+	background: #f9f9f9;
+}
+
+.slats li:active  {
+	background: #E9E9E9;
+}
+
+.slats li {
+	padding: 10px;
+	border-bottom: 1px solid #DDD;
+
+}
+
 .slats li:last-child {
-	margin: 0;
-	padding: 0;
 	border-bottom: none;
 }
 
@@ -1758,11 +1796,21 @@ input[readonly]:focus {
 	line-height: 1.1;
 }
 
-.slats li a img {
+
+.slats li a figure {
+	border-radius: 50%;
+	overflow: hidden;
 	float: left;
 	margin: 0 10px 0 0;
-	padding: 4px;
-	border: 1px solid #eee;
+	border: 1px solid #DDD;
+	transition: border-radius 0.5s;
+	-webkit-transition: border-radius 0.5s;
+}
+
+.slats li a:hover figure {
+	border-radius: 0;
+	box-shadow: 0px 5px 20px -5px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0px 5px 20px -5px rgba(0,0,0,0.3);
 }
 
 .slats li a:hover img {
@@ -1770,9 +1818,8 @@ input[readonly]:focus {
 }
 
 .slats li a p {
-	margin: 0 0 0 76px;
-	font-size: 14px;
-	line-height: 1.4;
+	margin: 10px 0;
+	line-height: 1em;
 }
 
 .slats li a p span.meta {

@@ -27,7 +27,7 @@
 
 		</header>
 
-		<section id="results"></section>
+		<section id="results" class="ch-box-highlight"></section>
 
 		<!-- Templates -->
 		<script type="text/template" id="tpl-site">
@@ -35,9 +35,9 @@
 		</script>
 		<script type="text/template" id="tpl-item">
 			<a href="<%= permalink %>">
-				<img src="<%= thumbnail %>" alt="<%= title %>" width="90" height="90"/>
+				<figure><img src="<%= thumbnail %>" alt="<%= title %>" width="90" height="90"/></figure>
 				<h2><%= title %></h2>
-				<p><%= address.state_name %></p>
+				<p class="location">En <%= address.state_name %></p>
 				<p class="ch-price"><%= currency_id %> <%= price %></p>
 			</a>
 		</script>
