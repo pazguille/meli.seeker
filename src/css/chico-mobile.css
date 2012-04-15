@@ -1700,15 +1700,25 @@ input[readonly]:focus {
 
 /*------------------------------------------------------------------------*/
 
-body,
-.ch-header {
-	width: 400px;
+body {
+	/*min-height: 45px; Si quiero el header fixed*/
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+body,
 .ch-header {
-	position: fixed;
+	width: 400px;
+}
+
+.ch-header {
+	/*position: fixed;*/
+	min-height: 45px;
 	z-index: 1;
+}
+
+#navigation {
+	height: 150px;
+	overflow: auto;
 }
 
 .ch-loading {
@@ -1719,9 +1729,15 @@ body,
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 1);
 }
 
+.ch-hide {
+	display: none !important;
+}
+
 #results {
-	padding-top: 44px;
+	/*padding-top: 44px; para que sea fixed*/
 	margin: 0;
+	overflow: auto;
+	max-height:500px;
 }
 
 #results .ch-list {
@@ -1730,8 +1746,6 @@ body,
 	border: none;
 	margin: 0;
 }
-
-
 
 #results .ch-list li a::after {
 	top: 30%;
@@ -1756,11 +1770,8 @@ body,
 
 .ch-box-highlight {
 	padding: 0;
-}
-
-.item,
-.item a {
-	
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
 }
 
 .item a {
@@ -1773,6 +1784,7 @@ body,
 	font-size: 12px;
 }
 
+
 .slats li:hover {
 	background: #f9f9f9;
 }
@@ -1783,7 +1795,7 @@ body,
 
 .slats li {
 	padding: 10px;
-	border-bottom: 1px solid #DDD;
+	border-bottom: 2px ridge rgba(255,255,255,0.5);
 
 }
 
@@ -1809,8 +1821,8 @@ body,
 
 .slats li a:hover figure {
 	border-radius: 0;
-	box-shadow: 0px 5px 20px -5px rgba(0,0,0,0.3);
-	-webkit-box-shadow: 0px 5px 20px -5px rgba(0,0,0,0.3);
+	/*box-shadow: 0px 5px 20px -5px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0px 5px 20px -5px rgba(0,0,0,0.3);*/
 }
 
 .slats li a:hover img {

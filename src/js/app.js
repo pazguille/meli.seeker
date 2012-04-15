@@ -76,7 +76,12 @@ var ItemsCollection = Backbone.Collection.extend({
 	},
 
 	"parse": function (response) {
+		this.total = response[2].paging.total;
 		return response[2].results;
+	},
+
+	"updateUrl": function (site) {
+		this.url = "https://api.mercadolibre.com/sites/" + site + "/search";
 	},
 
 	"url": "https://api.mercadolibre.com/sites/MLA/search"
@@ -174,57 +179,83 @@ var ItemListView = Backbone.View.extend({
 });
 
 var SeekerView = Backbone.View.extend({
-	"tagName": "ul",
-
-	"className": "slats ch-list",
+	"el": "#results",
 
 	"initialize": function (app) {
 		this.offset = 0;
+		this.limit = 5;
 		this.query = app.query;
 		this.collection = new ItemsCollection();
-		$("#results").append(this.el);
+
+		this.$list.appendTo(this.$el);
+		this.$loading.appendTo(this.$el);
+		this.$moreButton.appendTo(this.$el);
 	},
+
+	"events": {
+		"click .more": "more"
+	},
+
+	"$list": $("<ul class=\"slats ch-list\">"),
+
+	"$loading": $("<div class=\"ch-loading-wrap ch-hide\"><div class=\"ch-loading\">Buscando...</div></div>"),
+
+	"$moreButton": $("<input class=\"ch-btn more ch-hide\" type=\"button\" value=\"Buscar más...\">"),
 
 	"render": function () {
 		var that = this;
+		
 		_.each(this.collection.models, function (item) {
 			var items = new ItemListView({"model": item});
-			$(that.el).append(items.render(item).el);
+			that.$list.append(items.render(item).el);
 		}, this);
 
+		if (this.offset <= this.collection.total) {
+			this.$moreButton.removeClass("ch-hide");
+		}
+		
 		return this;
 	},
 
-	"$loading": $("<div class=\"ch-loading-wrap\"><div class=\"ch-loading\">Buscando...</div></div>"),
-
-	"start": function (query) {
-		var that = this,
-			opt = opt || {};
-
-		this.reset();
-
-		this.$el.append(this.$loading);
+	"fetch":  function () {
+		var that  = this;
+		
+		this.$moreButton.addClass("ch-hide");
+		this.$loading.removeClass("ch-hide");
 
 		this.collection.fetch({
 			"data": {
-				"q": escape(query),
-				"limit": (opt.limit || 10),
-				"offset": 0
+				"q": that.query,
+				"limit": this.limit,
+				"offset": that.offset
 			},
 			"success": function () {
-				that.$loading.remove();
+				that.$loading.addClass("ch-hide");
 				that.render();
 			}
 		});
 	},
 
-	"more": function () {
+	"start": function (query) {
+		this.query = query;
 
+		this.offset = 0;
+
+		this.reset();
+
+		$("#results").removeClass("ch-hide");
+
+		this.fetch();
+	},
+
+	"more": function () {
+		this.offset += this.limit;
+		this.fetch();
 	},
 
 	"reset": function () {
 		this.collection.reset();
-		this.$el.html("");
+		this.$list.html("");
 	}
 
 
@@ -246,7 +277,6 @@ var Header = Backbone.View.extend({
 
 	"renderSites": function (app) {
 		ch.mobile.menu($(".ch-header menu li"));
-
 		this.sites = new SitesView(app);
 	},
 
