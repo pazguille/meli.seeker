@@ -1774,6 +1774,13 @@ body,
 	border-top-left-radius: 0;
 }
 
+.ch-form-action {
+	margin: 0;
+	padding: 10px 0;
+	text-align: center;
+	border-top: 2px ridge rgba(255,255,255,0.5);
+}
+
 .item a {
 	display: inline-block;
 	overflow: hidden;

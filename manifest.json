@@ -1,5 +1,5 @@
 {
-    "name": "Meli Search",
+    "name": "MercadoLibre Seeker",
     "description": "MercadoLibre Seeker is a plugin from Chrome to search quickly any product.",
     "version": "0.5",
     //"background_page": "background.html",
@@ -12,8 +12,8 @@
         "https://*/*"
     ],
     "browser_action": {
-    "default_icon": "icon.png",
-    "default_title": "MercadoLibre Seeker",
-    "popup": "popup.html"
+        "default_icon": "icon.png",
+        "default_title": "MercadoLibre Seeker",
+        "popup": "popup.html"
     }
 }

@@ -187,9 +187,11 @@ var SeekerView = Backbone.View.extend({
 		this.query = app.query;
 		this.collection = new ItemsCollection();
 
-		this.$list.appendTo(this.$el);
-		this.$loading.appendTo(this.$el);
-		this.$moreButton.appendTo(this.$el);
+		this.$el
+			.append(this.$list)
+			.append(this.$loading)
+			.append(this.$moreButton)
+			.append(this.$notFound);
 	},
 
 	"events": {
@@ -202,6 +204,8 @@ var SeekerView = Backbone.View.extend({
 
 	"$moreButton": $("<input class=\"ch-btn more ch-hide\" type=\"button\" value=\"Buscar más...\">"),
 
+	"$notFound": $("<p class=\"ch-hide ch-form-action\">No se encontraron resultados.</p>"),
+
 	"render": function () {
 		var that = this;
 		
@@ -210,8 +214,12 @@ var SeekerView = Backbone.View.extend({
 			that.$list.append(items.render(item).el);
 		}, this);
 
-		if (this.offset <= this.collection.total) {
+		if (this.offset <= this.collection.total && this.collection.total > 1) {
 			this.$moreButton.removeClass("ch-hide");
+		}
+
+		if (this.collection.total === 0) {
+			this.$notFound.removeClass("ch-hide");
 		}
 		
 		return this;

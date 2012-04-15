@@ -1,4 +1,4 @@
-<!Doctype html>
+<!doctype html>
 <html lang="es" class="no-js">
 	<head>
 		<script></script>
@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="src/css/normalize.css">
 		<link rel="stylesheet" href="src/css/chico-mobile.css">
 	</head>
-	<body>	
+	<body>
 	
 		<header class="ch-header">
 			<h1 class="ch-logo">
@@ -28,7 +28,6 @@
 		</header>
 
 		<section id="results" class="ch-box-highlight ch-hide"></section>
-
 		<!-- Templates -->
 		<script type="text/template" id="tpl-site">
 			<li><a href="#<%= id %>" data-id="<%= id %>"><%= name %></a></li>
@@ -45,99 +44,6 @@
 		<script src="vendor/underscore.js"></script>
 		<script src="vendor/backbone.js"></script>
 		<script src="vendor/chico-mobile.js"></script>
-
 		<script src="src/js/app.js"></script>
-		<!--script>
-			console.log(chrome.cookies.get({
-				"name": "orgid",
-				"url": "http://www.mercadolibre.com.ar"
-			}, function (c) {
-				console.log("https://api.mercadolibre.com/users/me/bookmarks?access_token=" + c.value);
-			}));
-		</script-->
-		
-		<!--script type="text/javascript">
-		(function (window, undefined) {
-
-			var app = (function() {
-
-				var limit = 15,
-
-					search = {
-						offset: 0,
-						site: "MLA",
-						looking: function (query, offset, site) {
-							var offset = (offset == 0) ? offset : (search.offset += limit);
-							var site = (site != undefined) ? site : search.site;
-							$.getJSON("https://api.mercadolibre.com/sites/" + site +"/search?offset=" + offset + "&limit=" + limit + "&q=" + escape(query) + "&callback=?", search.parseResults);
-						},
-
-						parseResults: function (data) {
-							var items = [];
-							$(data[2].results).each(function (i,e) {
-
-								var title = "<header><a href=\"" + e.permalink + "\">" + e.title + "</a></header>";
-
-								var thumb = "<figure><img src=\"" + e.thumbnail + "\" width=\"90\" height=\"90\"></figure>";
-
-								var price = "<p class=\"costs\"><span class=\"price\">" + ((e.currency_id == "USD") ? "U$S " : "$ ") + e.price + "</span></p>";
-
-								var row = "<li><article>" + title + thumb + price + "</article></li>";
-
-								items.push(row);
-
-							});
-
-							var html = items.join("");
-
-							$(".loading").remove();
-
-							$("#searchResults").append(html);
-
-							if ($(".more").length != 0) {
-								return;
-							};
-
-							$(".example").append("<p class=\"actions\"><input type=\"submit\" value=\"More\" class=\"btn secondary skin more\"><p>");
-						}
-					};
-
-				return search;
-
-			})();
-
-			window.app = app;
-
-		}(window));
-
-		var init = function (event, offset) {
-			event.preventDefault();
-			event.stopPropagation();
-			$(".actions").remove();
-			app.looking($(".search").val(), offset,  $("#site").val());
-		};
-
-		$("#formBusqueda").bind("submit", function(event){
-			$("#searchResults").html("<div class=\"loading\">");
-			init(event, 0);
-		});
-
-		$(".more").live("click", function(event){
-			$("#searchResults").append("<div class=\"loading small\">");
-			init(event);
-		});
-
-		$("#searchResults").bind("click", function(event){
-			event = event || window.event;
-			var target = event.target || event.srcElement;
-			
-			if (target.tagName == "A") {
-				chrome.tabs.getSelected(null, function(tab) {
-					chrome.tabs.update(tab.id, {"url":target.href});
-				});
-			};
-		});
-
-		</script-->
 	</body>
 </html>
