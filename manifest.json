@@ -1,18 +1,17 @@
 {
     "name": "MercadoLibre Seeker",
-    "description": "MercadoLibre Seeker is a plugin from Chrome to search quickly any product.",
-    "version": "0.5",
-    //"background_page": "background.html",
-    //"options_page": "options.html",
+    "description": "La mejor extensión no-oficial de Google Chrome para buscar productos publicados en MercadoLibre.",
+    "version": "0.5.2",
+    "icons": {
+        "16": "src/assets/icon16.png",
+        "48": "src/assets/icon48.png",
+        "128": "src/assets/icon128.png"
+    },
     "permissions": [
-        "geolocation",
-        "cookies",
-        "tabs",
-        "http://*/*",
-        "https://*/*"
+        "tabs"
     ],
     "browser_action": {
-        "default_icon": "icon.png",
+        "default_icon": "src/assets/icon16.png",
         "default_title": "MercadoLibre Seeker",
         "popup": "popup.html"
     }

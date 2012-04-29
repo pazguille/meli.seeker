@@ -1,48 +1,3 @@
-/*** Namespace ***/
-;(function (exports) {
-	"use strict";
-	var app = (function () {
-
-		// Aca van las variables que quieran que sean privadas
-
-		var core = {
-		// variables publicas que van a acceder medienta app.xxx
-		};
-
-		return core;
-
-	}());
-
-	exports.app = app;
-
-}(window));
-/*
-var SitesCollection = Backbone.Collection.extend({
-	"model": Site
-});
-En una view despues tengo que hacer esto para levantar los datos locales:
-	//this.collection = new SitesCollection(sites);
-	//that.render();
-
--------------------------------------------------------------------------
-*/
-
-var sites = [
-	{ "name": "Argentina", "id": "MLA" },
-	{ "name": "Brasil", "id": "MLB" },
-	{ "name": "Colombia", "id": "MCO" },
-	{ "name": "Costa Rica", "id": "MCR" },
-	{ "name": "Chile", "id": "MLC" },
-	{ "name": "Dominicana", "id": "MRD" },
-	{ "name": "Ecuador", "id": "MEC" },
-	{ "name": "México", "id": "MLM" },
-	{ "name": "Panamá", "id": "MPA" },
-	{ "name": "Perú", "id": "MPE" },
-	{ "name": "Portugal", "id": "MPT" },
-	{ "name": "Uruguay", "id": "MLU" },
-	{ "name": "Venezuela", "id": "MLV" }
-];
-
 /*
 * Models
 */
@@ -55,9 +10,10 @@ var Item = Backbone.Model.extend({});
 var SitesCollection = Backbone.Collection.extend({
 	"model": Site,
 
-	sync: function (method, model, options) {
+	// (method, collection || model, options)
+	sync: function (method, collection, options) {
 		options.dataType = "jsonp";
-		return Backbone.sync(method, model, options);
+		return Backbone.sync(method, collection, options);
 	},
 
 	parse: function (response) {
@@ -70,9 +26,9 @@ var SitesCollection = Backbone.Collection.extend({
 var ItemsCollection = Backbone.Collection.extend({
 	"model": Item,
 
-	"sync": function (method, model, options) {
+	"sync": function (method, collection, options) {
 		options.dataType = "jsonp";
-		return Backbone.sync(method, model, options);
+		return Backbone.sync(method, collection, options);
 	},
 
 	"parse": function (response) {
@@ -81,10 +37,12 @@ var ItemsCollection = Backbone.Collection.extend({
 	},
 
 	"updateUrl": function (site) {
-		this.url = "https://api.mercadolibre.com/sites/" + site + "/search";
+		return this.url = "https://api.mercadolibre.com/sites/" + site + "/search";
 	},
 
-	"url": "https://api.mercadolibre.com/sites/MLA/search"
+	"url": function () {
+		return "https://api.mercadolibre.com/sites/" + localStorage["seekerSite"] + "/search";
+	}
 });
 
 /*
@@ -92,9 +50,9 @@ var ItemsCollection = Backbone.Collection.extend({
 */
 
 var SitesView = Backbone.View.extend({
-	"tagName": "ul",
+	"tagName": "select",
 
-	"className": "ch-list",
+	"className": "countries",
 
 	"template": _.template($("#tpl-site").html()),
 
@@ -102,18 +60,30 @@ var SitesView = Backbone.View.extend({
 		var that = this;
 
 		this.collection = new SitesCollection();
-		this.collection.fetch({
-			"success": function () {
+		this.collection.sync("read", this.collection, {
+			"success": function (data) {
+				that.collection.reset(data[2]);
+
 				that.render();
+
+				if (!localStorage["seekerSite"]) {
+					that.createMap();
+					$.getJSON("https://wipmania.com/jsonp?callback=?", function(data) {
+						localStorage["seekerSite"] = that.countryMap[data.address.country] || "MLA";
+					});
+				}
 			}
 		});
 
 		this.on("changeSite", function (site) {
-			app.site = site;
+			localStorage["seekerSite"] = site;
+			app.header.seeker.collection.updateUrl(site);
+			$(".ch-icon-list").click();
 		});
 	},
 
 	"render": function () {
+		this.$el.append("<option value=\"\">Selecciona un país...</option>");
 
 		_.each(this.collection.models, function (site) {
 			this.$el.append(this.template(site.toJSON()));
@@ -124,32 +94,78 @@ var SitesView = Backbone.View.extend({
 	},
 
 	"events": {
-		"click .ch-list a": "changeSite"
+		"change": "changeSite"
 	},
 
 	"changeSite": function (event) {
-		this.trigger("changeSite", event.srcElement.getAttribute("data-id"));
+		this.trigger("changeSite", event.srcElement.value);
 		return false;
+	},
+
+	"createMap": function () {
+		var countryMap = {};
+		_.each(this.collection.models, function (site) {
+			countryMap[site.get("name")] = site.id;
+		});
+
+		this.countryMap = countryMap;
 	}
 
 });
 
 
 var ItemView = Backbone.View.extend({
-	"tagName": "article",
-
-	"className": "item",
+	"tagName": "li",
 
 	"template": _.template($("#tpl-item").html()),
 
 	"render": function () {
-		var item = this.model.toJSON();
-		item.currency_id = this.currencyMap[item.currency_id];
+		var item = this.model,
+			stop = item.get("stop_time").split("T");
+
+		// Parse currency id
+		item.set("currency_id", this.currencyMap[item.get("currency_id")]);
+
+		// Set oringal image
+		item.set("picture", item.get("thumbnail").replace("v_I_f", "v_O_f"));
+		
+		// Translate the conditions
+		item.set("condition", this.conditionMap[item.get("condition")]);
+
+		// Calulate countdown days
+		item.set("countDown", this.countDown(item.get("stop_time")));
+
+		item.set("stop_date", stop[0]);
+		item.set("stop_hour", stop[1].split(".")[0]);
+
+		// Translate the buying mode
+		item.set("buying_mode", this.buyingModeMap[item.get("buying_mode")]);
+
+		item = item.toJSON();
 
 		$(this.el).html(this.template(item));
 
 		return this;
 	},
+
+	"countDown": function (date) {
+		var end = new Date(date),
+			today = new Date(),
+			diff = end.getTime() - today.getTime(),
+			days = Math.floor(diff / (1000 * 60 * 60 * 24));
+		return days;
+	},
+
+	"conditionMap": {
+		"new": "Nuevo",
+		"used": "Usado"
+	},
+
+	"buyingModeMap": {
+		"auction": "Subasta",
+		"buy_it_now": "Compra Inmediata"
+	},
+
 	"currencyMap": {
 		"BRL": "R$",
 		"UYU": "$",
@@ -167,56 +183,39 @@ var ItemView = Backbone.View.extend({
 	}
 });
 
-var ItemListView = Backbone.View.extend({
-	"tagName": "li",
-
-	"render": function (item) {
-		var item = new ItemView({"model": item});
-		$(this.el).html(item.render().el);
-
-		return this;
-	}
-});
-
 var SeekerView = Backbone.View.extend({
 	"el": "#results",
 
 	"initialize": function (app) {
 		this.offset = 0;
-		this.limit = 5;
+		this.limit = 10;
 		this.query = app.query;
 		this.collection = new ItemsCollection();
 
 		this.$el
-			.append(this.$list)
-			.append(this.$loading)
-			.append(this.$moreButton)
-			.append(this.$notFound);
+			.prepend(this.$list)
+			.prepend(this.$notFound);
+			
 	},
 
 	"events": {
-		"click .more": "more"
+		"scroll": "more"
 	},
 
-	"$list": $("<ul class=\"slats ch-list\">"),
+	"$list": $("<ul class=\"slats ch-slats ch-list\">"),
 
-	"$loading": $("<div class=\"ch-loading-wrap ch-hide\"><div class=\"ch-loading\">Buscando...</div></div>"),
+	"$loading": $(".ch-loading-wrap"),
 
-	"$moreButton": $("<input class=\"ch-btn more ch-hide\" type=\"button\" value=\"Buscar más...\">"),
-
-	"$notFound": $("<p class=\"ch-hide ch-form-action\">No se encontraron resultados.</p>"),
+	"$notFound": $("<p class=\"ch-hide ch-form-action ch-box-highlight\">No se encontraron resultados.</p>"),
 
 	"render": function () {
 		var that = this;
 		
-		_.each(this.collection.models, function (item) {
-			var items = new ItemListView({"model": item});
+		_.each(this.collection.models.slice(this.offset), function (item) {
+			var items = new ItemView({"model": item});
 			that.$list.append(items.render(item).el);
 		}, this);
 
-		if (this.offset <= this.collection.total && this.collection.total > 1) {
-			this.$moreButton.removeClass("ch-hide");
-		}
 
 		if (this.collection.total === 0) {
 			this.$notFound.removeClass("ch-hide");
@@ -225,13 +224,15 @@ var SeekerView = Backbone.View.extend({
 		return this;
 	},
 
-	"fetch":  function () {
-		var that  = this;
-		
-		this.$moreButton.addClass("ch-hide");
+	"fetch":  function (o) {
+		var that  = this,
+			o = o || {},
+			add = o.add || false;
+
 		this.$loading.removeClass("ch-hide");
 
 		this.collection.fetch({
+			"add": add,
 			"data": {
 				"q": that.query,
 				"limit": this.limit,
@@ -257,21 +258,50 @@ var SeekerView = Backbone.View.extend({
 	},
 
 	"more": function () {
-		this.offset += this.limit;
-		this.fetch();
+		var height = this.$list.height() - this.$el.height(),
+			bottom = this.el.scrollTop;
+
+		if (height === bottom) {
+			this.offset += this.limit;
+			this.fetch({"add": true});
+		};
 	},
 
 	"reset": function () {
 		this.collection.reset();
+		this.$notFound.addClass("ch-hide");
 		this.$list.html("");
 	}
 
 
 });
 
+var VipView = Backbone.View.extend({
+	"el": "#vip",
+
+	"template": _.template($("#tpl-vip").html()),
+
+	"events": {
+		"click .buy": "buy"
+	},
+
+	"render": function (item) {
+		$(this.el).html(this.template(item));
+		return this;
+	},
+
+	"buy": function (eevnt) {
+		chrome.tabs.create({url: event.target.href});
+		
+	}
+
+});
+
 
 var Header = Backbone.View.extend({
 	"el": ".ch-header",
+
+	"$query": $("#query"),
 
 	"initialize": function (app) {
 		this.app = app;
@@ -294,30 +324,48 @@ var Header = Backbone.View.extend({
 
 	"seek": function () {
 		var app = this.app;
-		app.query = ($("#query").val()).trim();
+		app.query = (this.$query.val()).trim();
 		this.seeker.start(app.query);
 
 		return false;
 	}
-
 });
-
 
 var App = Backbone.Router.extend({
 	"routes": {
-		"": "index"
+		"": "index",
+		"item/:id": "vip"
 	},
 
-	"initialize": function () {
+	"$search": $("[data-page=\"search\"]"),
+
+	"$vip": $("[data-page=\"vip\"]"),
+
+	"initialize": function () {		
 		this.query = "";
-		this.site = "MLA";
 		this.header = new Header(this);
+		this.vip = new VipView();
+	},
+
+	"transition": function () {
+		this.$search.toggleClass("ch-hiden");
+		this.$vip.toggleClass("ch-hide");
 	},
 
 	"index": function () {
-		//var search = new searchView({model: new ItemCollection(), el: ".ch-header"});
+		this.$search.removeClass("ch-hiden");
+		this.$vip.addClass("ch-hide");
+	},
+
+	"vip": function (id) {
+		this.transition();
+		var item = this.header.seeker.collection.get(id)["attributes"];
+		this.vip.render(item);
 	}
 });
 
-var seekerPlugin = new App();
-Backbone.history.start();
+var seekerPlugin;
+setTimeout(function () {
+	seekerPlugin = new App();
+	Backbone.history.start();
+}, 0);

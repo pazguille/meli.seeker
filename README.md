@@ -1,10 +1,11 @@
 # MercadoLibre Seeker
-MercadoLibre Seeker is a plugin from Chrome to search quickly any product.
+MercadoLibre Seeker es una extensión de Google Chrome para buscar productos/servicios publicados en MercadoLibre artículos en MercadoLibre con un solo clic.
 
 ## Contact
 - Guillermo Paz (Frontend developer - JavaScript developer | Web standards lover)
 - e-mail: [guille87paz@gmail.com](mailto:guille87paz@gmail.com)
 - Twitter: [@pazguille](http://twitter.com/pazguille)
+- Web: [http://pazguille.me](http://pazguille.me)
 
 
 ## License
