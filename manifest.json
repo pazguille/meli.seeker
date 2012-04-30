@@ -1,6 +1,6 @@
 {
     "name": "MercadoLibre Seeker",
-    "description": "La mejor extensión no-oficial de Google Chrome para buscar productos publicados en MercadoLibre.",
+    "description": "La mejor extensión no-oficial de Google Chrome para buscar productos en MercadoLibre.",
     "version": "0.5.2",
     "icons": {
         "16": "src/assets/icon16.png",
