@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="no-js">
+<html lang="es">
 	<head>
 		<script></script>
 		<meta charset="utf-8">
@@ -17,7 +17,6 @@
 				
 				<form class="ch-form ch-header-form" action="./" method="GET" role="search">
 					<input type="text" id="query" class="search" maxlength="60" name="q" autocomplete="off" placeholder="Busca en MercadoLibre...">
-					<!-- autofocus realientiza toda la carga de la extension -->
 					<input type="submit" value="Buscar" accesskey="b" class="ch-icon-search">
 				</form>
 
@@ -47,57 +46,7 @@
 				<div class="ch-loading-wrap ch-hide"><div class="ch-loading">Buscando...</div></div>
 			</section>
 		</div>
-		<!-- Templates 
 
-			<li><a href="#<%= id %>" data-id="<%= id %>"><%= name %></a></li>
-		-->
-		<script type="text/template" id="tpl-site">
-			<option data-id="<%= id %>" value="<%= id %>"><%= name %></option>
-		</script>
-		<script type="text/template" id="tpl-item">
-			<article class="item">
-				<a href="#item/<%= id %>" data-permalink="<%= permalink %>">
-					<figure><img src="<%= thumbnail %>" alt="<%= title %>" width="90" height="90"/></figure>
-					<h2><%= title %></h2>
-					<p class="location">En <%= address.state_name %></p>
-					<p class="ch-price"><%= currency_id %> <%= price %></p>
-				</a>
-			</article>
-		</script>
-		<script type="text/template" id="tpl-vip">
-			<article id="item">
-					<h1><%= title %></h1>
-					<p class="ch-price"><%= currency_id %> <%= price %></p>
-					<figure>
-						<img src="<%= picture %>" alt="<%= title %>"/>						
-					</figure>
-					<ul class="ch-list">
-						<li class="ch-icon-gift"><%= condition %></li>
-						<li class="ch-icon-tags"><%= buying_mode %></li>
-						<li class="ch-icon-calendar">Finaliza el <%= stop_date %> a las <%= stop_hour %> (<%= countDown %> días)</li>
-						<li class="ch-icon-map-marker"><%= address.city_name %>, <%= address.state_name %></li>
-						<li class="ch-icon-shopping-cart"><%= sold_quantity %> vendidos</li>
-					</ul>
-					<a href="<%= permalink %>" class="ch-btn buy">Ver en MercadoLibre</a>
-					<!--a href="https://compra.mercadolibre.com.ar/bid/confirm?item_id=<%= id %>&quantity=1&parent_url=<%= permalink %>-_JM" class="ch-btn buy">Comprar</a-->
-			</article>
-		</script>
-		<script>
-			(function(a){"use strict";var b=function(){var a=document.head||document.getElementsByTagName("head")[0],b=navigator.appName.indexOf("Microsoft")===0,c=0,d,e,f;f=function(a){var c=document.createElement("script");c.src=a;c.async="async";if(b){c.defer="defer"}return c};e=function(a,b,e){if(a!==b[b.length-1]){c+=1;d(b[c],b,e);return}if(e){e()}};d=function(c,d,g){var h=f(c);if(b&&h.readyState){h.onreadystatechange=function(){if(h.readyState==="loaded"||h.readyState==="complete"){h.onreadystatechange=null;e(c,d,g)}}}else{h.onload=function(){e(c,d,g)}}a.appendChild(h)};return{me:function(a,b){if(typeof a==="string"){a=[a]}(function(a,b){d(a[c],a,b)})(a,b);return this}}}();a.give=b})(window);
-
-			give.me(["vendor/jquery.js","vendor/chico-mobile.js","vendor/underscore.js","vendor/backbone.js","src/js/app.js"]);
-
-			window.onload = function () {
-				var _gaq = _gaq || [];
-				_gaq.push(['_setAccount', 'UA-15753373-4']);
-				_gaq.push(['_trackPageview']);
-
-				(function() {
-				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-				})();
-			};
-		</script>
+		<script src="src/js/init.js"></script>
 	</body>
 </html>
